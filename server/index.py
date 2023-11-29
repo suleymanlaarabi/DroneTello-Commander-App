@@ -41,5 +41,12 @@ def bas(value):
     tello.move_down(value)
     return useRouteValue(value)
 
+@app.route('/arreter', methods=['GET'])
+def arreter():
+    tello.land()
+    return {
+        "ok": "ok"
+    }
+
 if __name__ == '__main__':
     app.run(debug=False, host="0.0.0.0", port=6173)
