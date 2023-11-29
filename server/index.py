@@ -6,7 +6,6 @@ from djitellopy import Tello
 
 tello = Tello()
 tello.connect()
-tello.takeoff()
 
 app = Flask(__name__)
 CORS(app)  
@@ -44,6 +43,12 @@ def bas(value):
 @app.route('/arreter', methods=['GET'])
 def arreter():
     tello.land()
+    return {
+        "ok": "ok"
+    }
+@app.route('/demarrer', methods=['GET'])
+def arreter():
+    tello.takeoff()
     return {
         "ok": "ok"
     }
