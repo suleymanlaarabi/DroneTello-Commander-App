@@ -26,9 +26,9 @@ export async function bas() {
 }
 
 export async function demarrer() {
-  return get(config.host + "/demarrer/" + value);
+  return get(config.host + "/demarrer");
 }
 
 export async function arreter() {
-  return get(config.host + "/arreter/" + value);
+  return get(config.host + "/arreter");
 }
