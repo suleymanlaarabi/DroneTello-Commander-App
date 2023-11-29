@@ -1,7 +1,9 @@
 import { Button, ChakraProvider, Flex, Heading } from "@chakra-ui/react";
 import {
+  arreter,
   avancer,
   bas,
+  demarrer,
   droite,
   gauche,
   haut,
@@ -18,9 +20,13 @@ function App() {
           alignItems={"center"}
           justifyContent={"center"}
           direction={"column"}
-          gap={20}
+          gap={10}
         >
           <Heading>Drone Tello</Heading>
+          <Flex gap={5}>
+            <Button onClick={demarrer}>Démarrer</Button>
+            <Button onClick={arreter}>Arreter</Button>
+          </Flex>
           <Flex gap={10}>
             <Flex gap={5} direction={"column"}>
               <Button onClick={avancer}>Avancer</Button>
