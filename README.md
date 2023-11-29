@@ -1,6 +1,6 @@
-# ReactTS Vite Starter Kit 🚀
+# DroneTello Commander App 🚁
 
-Kickstart your React TypeScript projects with this blazing-fast starter kit powered by Vite. This template includes Chakra UI for sleek component styling and React Icons for easy icon integration.
+Welcome to DroneTello Commander, a web application built with ReactTS, Chakra UI, and a Python server using Flask.
 
 ## Features:
 
@@ -14,6 +14,8 @@ Kickstart your React TypeScript projects with this blazing-fast starter kit powe
   Access a vast collection of popular icons for seamless integration into your application.
 - **Opinionated Configuration**:
   Get started quickly with a pre-configured setup based on best practices.
+- **Drone Control**:
+  Python server with Flask API to command and control the Tello drone.
 
 ## Quick Start:
 
