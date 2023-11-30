@@ -40,6 +40,8 @@ export function CreateBlockModal({
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Select ref={selectRef} placeholder="Select action">
+              <option value={BlockName.Demarrer}>Demarrer</option>
+              <option value={BlockName.Arreter}>Arreter</option>
               <option value={BlockName.Avancer}>Avancer</option>
               <option value={BlockName.Reculer}>Reculer</option>
               <option value={BlockName.Droite}>Droite</option>
