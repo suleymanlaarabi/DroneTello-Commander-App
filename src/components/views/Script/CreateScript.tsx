@@ -9,16 +9,9 @@ const CreateScript = () => {
     name: "No Name",
     road: [],
   });
-  console.log(dispatch);
   const [scriptName, setScriptName] = useState("");
   const { Modal, onOpen } = useModal(CreateBlockModal);
   const handleBlockAdd = (name: BlockName) => {
-    dispatch({
-      type: "UPDATE_NAME",
-      payload: {
-        name: scriptName,
-      },
-    });
     dispatch({
       type: "ADD_BLOCK",
       payload: {
@@ -27,8 +20,14 @@ const CreateScript = () => {
     });
   };
   const handleSave = () => {
+    dispatch({
+      type: "UPDATE_NAME",
+      payload: {
+        name: scriptName,
+      },
+    });
+    script.name = scriptName;
     const oldScripts = localStorage.getItem("script");
-    console.log(script, oldScripts);
     if (oldScripts) {
       localStorage.setItem(
         "script",
