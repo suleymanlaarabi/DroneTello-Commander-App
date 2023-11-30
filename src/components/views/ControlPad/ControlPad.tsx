@@ -1,42 +1,148 @@
-import { Button, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import {
   arreter,
   avancer,
   bas,
   demarrer,
   droite,
+  emergency,
   gauche,
   haut,
   reculer,
 } from "../../../services/api/tello-api";
+import { useState } from "react";
+import { BlockName, BlockResult } from "../../../types/ScriptTypes/Block.types";
 
 const ControlPad = () => {
+  const [speed, setSpeed] = useState(20);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const launchAction = async (
+    action: (distance: number | undefined) => Promise<BlockResult>
+  ) => {
+    setIsLoading(true);
+    action(speed).then(() => {
+      setIsLoading(false);
+    });
+  };
+
+  const handleMove = (name: BlockName) => {
+    switch (name) {
+      case BlockName.Avancer:
+        launchAction(avancer);
+        break;
+      case BlockName.Reculer:
+        launchAction(reculer);
+        break;
+      case BlockName.Droite:
+        launchAction(droite);
+        break;
+      case BlockName.Gauche:
+        launchAction(gauche);
+        break;
+      case BlockName.Demarrer:
+        launchAction(demarrer);
+        break;
+      case BlockName.Arreter:
+        launchAction(arreter);
+        break;
+      case BlockName.Haut:
+        launchAction(haut);
+        break;
+      case BlockName.Bas:
+        launchAction(bas);
+        break;
+      case BlockName.Emergency:
+        launchAction(emergency);
+        break;
+    }
+  };
   return (
     <>
       <Heading>Drone Tello</Heading>
-      <Flex gap={5}>
-        <Button onClick={demarrer}>Démarrer</Button>
-        <Button onClick={arreter}>Arreter</Button>
-      </Flex>
-      <Flex gap={10}>
-        <Flex gap={5} direction={"column"}>
-          <Button onClick={avancer}>Avancer</Button>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <>
           <Flex gap={5}>
-            <Button onClick={droite}>droite</Button>
-            <Button onClick={gauche}>Gauche</Button>
+            <Button onClick={() => handleMove(BlockName.Demarrer)}>
+              Démarrer
+            </Button>
+            <Button onClick={() => handleMove(BlockName.Arreter)}>
+              Arreter
+            </Button>
+            <Button onClick={() => handleMove(BlockName.Emergency)}>
+              Abort
+            </Button>
           </Flex>
-          <Button onClick={reculer}>reculer</Button>
-        </Flex>
+          <Text fontSize={25} align={"center"} minW={"70px"} w={"full"}>
+            Distance: {speed} cm
+          </Text>
+          <Flex gap={5}>
+            <Flex gap={10} direction={"column"}>
+              <Button onClick={() => handleMove(BlockName.Avancer)}>
+                Avancer
+              </Button>
+              <Flex gap={2}>
+                <Button onClick={() => handleMove(BlockName.Droite)}>
+                  droite
+                </Button>
+                <Button onClick={() => handleMove(BlockName.Gauche)}>
+                  Gauche
+                </Button>
+              </Flex>
+              <Button onClick={() => handleMove(BlockName.Reculer)}>
+                reculer
+              </Button>
+            </Flex>
 
-        <Flex gap={5} flexDirection={"column"}>
-          <Button h={"100%"} onClick={haut}>
-            Haut
-          </Button>
-          <Button h={"100%"} onClick={bas}>
-            Bas
-          </Button>
-        </Flex>
-      </Flex>
+            <Flex gap={5} flexDirection={"column"}>
+              <Button h={"100%"} onClick={() => handleMove(BlockName.Haut)}>
+                Haut
+              </Button>
+              <Button h={"100%"} onClick={() => handleMove(BlockName.Bas)}>
+                Bas
+              </Button>
+            </Flex>
+
+            <Flex
+              direction={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <Slider
+                aria-label="slider-ex-3"
+                value={speed}
+                onChange={(e) => setSpeed(e)}
+                step={10}
+                min={20}
+                max={200}
+                orientation="vertical"
+                minH="32"
+                colorScheme="blue"
+              >
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb bg={"blue"}>
+                  <Box />
+                </SliderThumb>
+              </Slider>
+            </Flex>
+          </Flex>
+        </>
+      )}
     </>
   );
 };
