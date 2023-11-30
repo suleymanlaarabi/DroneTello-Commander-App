@@ -21,11 +21,11 @@ Welcome to DroneTello Commander, a web application built with ReactTS, Chakra UI
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/suleymanlaarabidev/react-vite.starter.git
+   git clone https://github.com/suleymanlaarabidev/DroneTello-Commander-App.git
    ```
 2. **Go in the directory:**
    ```bash
-   cd react-vite.starter
+   cd DroneTello-Commander-App
    ```
 3. **Install depedencies:**
    ```bash
