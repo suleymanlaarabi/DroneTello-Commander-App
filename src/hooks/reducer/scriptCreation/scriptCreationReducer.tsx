@@ -1,28 +1,77 @@
-import { Block, BlockResult } from "../../../types/ScriptTypes/Block.types";
+import {
+  Block,
+  BlockName,
+  BlockResult,
+} from "../../../types/ScriptTypes/Block.types";
 import { ScriptShema } from "../../../types/ScriptTypes/ScriptShema.types";
-import { createActionPayload } from "./function";
+import { createActionPayload, moveArray, runScript } from "./function";
 import { uid } from "uid";
 
-type actionString = "ADD_BLOCK" | "REMOVE_BLOCK" | "UPDATE_NAME";
-export type PayloadScriptReducer = {
-  uid?: number;
-  name: string;
-  time?: number;
-  action?: () => BlockResult;
+interface Action<T extends string, P> {
+  type: T;
+  payload: P;
+}
+
+export enum ActionKind {
+  ADD_BLOCK = "ADD_BLOCK",
+  REMOVE_BLOCK = "REMOVE_BLOCK",
+  UPDATE_NAME = "UPDATE_NAME",
+  MOVE_BLOCK = "MOVE_BLOCK",
+  SET_SCRIPT = "SET_SCRIPT",
+  RUN_SCRIPT = "RUN_SCRIPT",
+}
+
+export type PayloadAddBlock = {
+  uid?: string;
+  name: BlockName;
+  time: number;
+  distance: number;
+  action?: () => Promise<BlockResult>;
 };
-export type actionScriptCreationReducer = {
-  type: actionString;
-  payload: PayloadScriptReducer;
-};
+
+type ActionAddBlock = Action<ActionKind.ADD_BLOCK, PayloadAddBlock>;
+
+type ActionSetScript = Action<ActionKind.SET_SCRIPT, ScriptShema>;
+
+type ActionWithoutPayload = Action<ActionKind.RUN_SCRIPT, undefined>;
+
+type ActionUpdateName = Action<
+  ActionKind.UPDATE_NAME,
+  {
+    name: string;
+  }
+>;
+type ActionRemoveBlock = Action<
+  ActionKind.REMOVE_BLOCK,
+  {
+    uid: string;
+  }
+>;
+type ActionMoveBlock = Action<
+  ActionKind.MOVE_BLOCK,
+  {
+    positon: number;
+    newPosition: number;
+  }
+>;
+
+export type actionScriptCreationReducer =
+  | ActionAddBlock
+  | ActionUpdateName
+  | ActionRemoveBlock
+  | ActionMoveBlock
+  | ActionSetScript
+  | ActionWithoutPayload;
 
 function scriptCreationReducer(
   state: ScriptShema,
   action: actionScriptCreationReducer
 ) {
-  const payload = action.payload;
+  const { type, payload } = action;
+  const { road } = state;
 
-  switch (action.type) {
-    case "ADD_BLOCK":
+  switch (type) {
+    case ActionKind.ADD_BLOCK:
       if (!payload.action) {
         payload.action = createActionPayload(payload);
       }
@@ -35,15 +84,31 @@ function scriptCreationReducer(
             uid: uid(),
             name: payload.name,
             time: payload.time,
+            distance: payload.distance,
             action: payload.action,
           } as Block,
         ],
       };
-    case "UPDATE_NAME":
+    case ActionKind.UPDATE_NAME:
       return {
         name: payload.name,
         road: [...state.road],
       };
+    case ActionKind.REMOVE_BLOCK:
+      return {
+        name: state.name,
+        road: state.road.filter((el) => el.uid != payload.uid),
+      };
+    case ActionKind.MOVE_BLOCK:
+      return {
+        name: state.name,
+        road: moveArray(road, payload.newPosition, payload.positon),
+      };
+    case ActionKind.SET_SCRIPT:
+      return payload;
+    case ActionKind.RUN_SCRIPT:
+      runScript(state);
+      break;
   }
   return state;
 }
