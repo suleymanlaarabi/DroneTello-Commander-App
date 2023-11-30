@@ -4,46 +4,53 @@ import service.tello as drone
 
 control_route = Blueprint('api', __name__)
 
-@control_route.route('/avancer/<int:value>', methods=['GET'])
+@control_route.route('/tello/avancer/<int:value>', methods=['GET'])
 def avancer(value):
-    drone.avancer()
+    drone.avancer(value)
     return useRouteValue(value)
 
-@control_route.route('/reculer/<int:value>', methods=['GET'])
+@control_route.route('/tello/reculer/<int:value>', methods=['GET'])
 def reculer(value):
-    drone.reculer()
+    drone.reculer(value)
     return useRouteValue(value)
 
-@control_route.route('/droite/<int:value>', methods=['GET'])
+@control_route.route('/tello/droite/<int:value>', methods=['GET'])
 def droite(value):
-    drone.droite()
+    drone.droite(value)
     return useRouteValue(value)
 
-@control_route.route('/gauche/<int:value>', methods=['GET'])
+@control_route.route('/tello/gauche/<int:value>', methods=['GET'])
 def gauche(value):
-    drone.gauche()
+    drone.gauche(value)
     return useRouteValue(value)
 
-@control_route.route('/haut/<int:value>', methods=['GET'])
+@control_route.route('/tello/haut/<int:value>', methods=['GET'])
 def haut(value):
-    drone.haut()
+    drone.haut(value)
     return useRouteValue(value)
 
-@control_route.route('/bas/<int:value>', methods=['GET'])
+@control_route.route('/tello/bas/<int:value>', methods=['GET'])
 def bas(value):
-    drone.bas()
+    drone.bas(value)
     return useRouteValue(value)
 
-@control_route.route('/arreter', methods=['GET'])
+@control_route.route('/tello/arreter', methods=['GET'])
 def arreter():
     drone.arreter()
     return {
         "ok": "ok"
     }
 
-@control_route.route('/demarrer', methods=['GET'])
+@control_route.route('/tello/demarrer', methods=['GET'])
 def demarrer():
     drone.demarrer()
+    return {
+        "ok": "ok"
+    }
+
+@control_route.route('/tello/emergency', methods=['GET'])
+def emergency():
+    drone.emergency()
     return {
         "ok": "ok"
     }
