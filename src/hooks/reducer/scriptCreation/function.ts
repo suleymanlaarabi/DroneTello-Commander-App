@@ -12,75 +12,112 @@ import {
   BlockResult,
 } from "../../../types/ScriptTypes/Block.types";
 import { ScriptShema } from "../../../types/ScriptTypes/ScriptShema.types";
-import { PayloadScriptReducer } from "./scriptCreationReducer";
+import { PayloadAddBlock } from "./scriptCreationReducer";
 
-export function createActionPayload(
-  currentPayload: PayloadScriptReducer
-): () => BlockResult {
-  return createActionWithName(currentPayload.name as BlockName);
+type Distance = number | undefined;
+
+export function createActionPayload(currentPayload: PayloadAddBlock) {
+  return createActionWithName(
+    currentPayload.name as BlockName,
+    currentPayload.distance
+  );
 }
 
-export function createActionWithName(name: BlockName) {
-  let newPayloadAction: () => BlockResult;
-  const payloadActionTemplate = (action: () => Promise<BlockResult>) => {
-    action();
-    return {
-      isError: false,
-      result: "ok",
-    };
-  };
+export function createActionWithName(name: BlockName, distance: Distance) {
+  let action: () => Promise<BlockResult>;
   switch (name) {
     case BlockName.Avancer:
-      newPayloadAction = () => {
-        return payloadActionTemplate(avancer);
+      action = async () => {
+        return avancer(distance);
       };
       break;
     case BlockName.Reculer:
-      newPayloadAction = () => {
-        return payloadActionTemplate(reculer);
+      action = async () => {
+        return reculer(distance);
       };
       break;
     case BlockName.Droite:
-      newPayloadAction = newPayloadAction = () => {
-        return payloadActionTemplate(droite);
+      action = async () => {
+        return droite(distance);
       };
       break;
     case BlockName.Gauche:
-      newPayloadAction = newPayloadAction = () => {
-        return payloadActionTemplate(gauche);
+      action = async () => {
+        return gauche(distance);
       };
       break;
     case BlockName.Arreter:
-      newPayloadAction = newPayloadAction = () => {
-        return payloadActionTemplate(arreter);
+      action = async () => {
+        return arreter();
       };
       break;
     case BlockName.Demarrer:
-      newPayloadAction = newPayloadAction = () => {
-        return payloadActionTemplate(demarrer);
+      action = async () => {
+        return demarrer();
       };
       break;
     default:
-      newPayloadAction = () => ({
-        isError: false,
-        result: "ok",
-      });
+      action = async () => {
+        return avancer(distance);
+      };
+      break;
   }
-  return newPayloadAction;
+  return action;
 }
-
-export function addActionToScript(script: ScriptShema) {
+export function addActionToScript(script: ScriptShema): ScriptShema {
   const newRoad: Block[] = [];
   script.road.forEach((el) => {
     newRoad.push({
       ...el,
-      action: createActionWithName(el.name as BlockName),
+      action: createActionWithName(el.name as BlockName, el.distance),
     });
   });
   const newScript = {
     name: script.name,
     road: newRoad,
   };
-
   return newScript;
+}
+
+export function moveArray<T>(
+  Road: T[],
+  position: number,
+  newPosition: number
+): T[] {
+  // Vérifier que les positions sont valides
+  if (
+    position < 0 ||
+    position >= Road.length ||
+    newPosition < 0 ||
+    newPosition >= Road.length
+  ) {
+    return Road;
+  }
+
+  // Copier le Road pour éviter de modifier l'original directement
+  const nouveauRoad = [...Road];
+
+  // Stocker l'élément à la position initiale
+  const elementDeplace = nouveauRoad[position];
+
+  // Supprimer l'élément de la position initiale
+  nouveauRoad.splice(position, 1);
+
+  // Insérer l'élément à la nouvelle position
+  nouveauRoad.splice(newPosition, 0, elementDeplace);
+
+  return nouveauRoad;
+}
+async function sleep(time: number) {
+  await new Promise((resolve) => setTimeout(resolve, time));
+  return;
+}
+export async function runScript(script: ScriptShema) {
+  const { road } = script;
+  console.log(road);
+  for (const block of road) {
+    block.action(undefined);
+    await sleep(block.time);
+  }
+  return;
 }
