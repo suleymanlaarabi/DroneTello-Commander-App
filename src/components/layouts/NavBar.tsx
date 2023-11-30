@@ -18,16 +18,8 @@ interface Props {
 
 const Links = [
   {
-    name: "ControlPad V2 (Beta)",
-    path: "control-pad",
-  },
-  {
     name: "Script",
     path: "script",
-  },
-  {
-    name: "Create script",
-    path: "create-script",
   },
 ];
 
