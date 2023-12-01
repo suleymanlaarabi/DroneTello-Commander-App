@@ -112,12 +112,17 @@ async function sleep(time: number) {
   await new Promise((resolve) => setTimeout(resolve, time));
   return;
 }
-export async function runScript(script: ScriptShema) {
+export async function runScript(
+  script: ScriptShema,
+  callback: (name: string) => void
+) {
   const { road } = script;
   console.log(road);
   for (const block of road) {
     block.action(undefined);
+    callback(block.uid);
     await sleep(block.time);
   }
+  callback("");
   return;
 }
