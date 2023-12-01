@@ -12,6 +12,9 @@ const Zoom = ({ children, id }: props) => {
       initial={{
         scale: 0.7,
       }}
+      exit={{
+        scale: 0.7,
+      }}
       transition={{
         duration: 0.3,
       }}
