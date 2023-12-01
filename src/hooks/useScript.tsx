@@ -22,8 +22,16 @@ export function useScript() {
     localStorage.setItem("script", JSON.stringify([...scripts, script]));
     setScripts((current) => [...current, script]);
   };
+  const removeScript = (script: ScriptShema) => {
+    setScripts((current) => current.filter((el) => el.name != script.name));
+    localStorage.setItem(
+      "script",
+      JSON.stringify(scripts.filter((el) => el.name != script.name))
+    );
+  };
   return {
     scripts,
     addScript,
+    removeScript,
   };
 }
