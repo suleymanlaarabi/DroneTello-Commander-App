@@ -4,7 +4,7 @@ import {
   BlockResult,
 } from "../../../types/ScriptTypes/Block.types";
 import { ScriptShema } from "../../../types/ScriptTypes/ScriptShema.types";
-import { createActionPayload, moveArray, runScript } from "./function";
+import { createActionPayload, moveArray } from "./function";
 import { uid } from "uid";
 
 interface Action<T extends string, P> {
@@ -106,9 +106,6 @@ function scriptCreationReducer(
       };
     case ActionKind.SET_SCRIPT:
       return payload;
-    case ActionKind.RUN_SCRIPT:
-      runScript(state);
-      break;
   }
   return state;
 }
