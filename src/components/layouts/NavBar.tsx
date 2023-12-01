@@ -21,6 +21,10 @@ const Links = [
     name: "Script",
     path: "script",
   },
+  {
+    name: "Custom Script",
+    path: "custom-script",
+  },
 ];
 
 const Link = (props: Props) => {
