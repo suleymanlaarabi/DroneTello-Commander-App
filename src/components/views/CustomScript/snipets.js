@@ -22,6 +22,15 @@ export function suggestions(languages) {
       documentation: el + " le programme",
     };
   });
+  const other = [
+    {
+      label: "sleep",
+      kind: languages.CompletionItemKind.Function,
+      insertText: "sleep(500)",
+      insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      documentation: "prend un int: x en parametre et attend de x miliseconde ",
+    },
+  ];
 
-  return [...moveSnippets, ...actionSnippets];
+  return [...moveSnippets, ...actionSnippets, ...other];
 }
