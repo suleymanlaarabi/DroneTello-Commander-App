@@ -17,6 +17,7 @@ const BlockCardList = ({
   isPhone,
 }: props) => {
   return road.map((el, index) => {
+    console.log(el);
     return (
       <Flex
         key={el.uid}
