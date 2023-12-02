@@ -5,11 +5,13 @@ import {
   IconButton,
   Input,
   Select,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useReducer, useRef, useState } from "react";
 import scriptCreationReducer, {
   ActionKind,
+  PayloadAddCustomBlock,
 } from "../../../hooks/reducer/scriptCreation/scriptCreationReducer";
 import { CreateBlockModal } from "../../common/Modal/CreateBlockModal";
 import useModal from "../../../hooks/useModal";
@@ -21,7 +23,10 @@ import {
 import { useScript } from "../../../hooks/useScript";
 import { AnimatePresence, Reorder } from "framer-motion";
 import BlockCardList from "./BlockCardList";
+import { CustomBlockDrawer } from "../../common/drawer/CustomBlockDrawer";
 const Script = () => {
+  const { isOpen, onOpen: openCustomBlockDrawer, onClose } = useDisclosure();
+
   const isPhone = window.innerWidth <= 550;
   const { scripts, addScript, removeScript } = useScript();
 
@@ -128,8 +133,20 @@ const Script = () => {
     removeScript(script);
   };
 
+  const handleCustomBlockAdd = (block: PayloadAddCustomBlock) => {
+    dispatch({
+      type: ActionKind.ADD_CUSTOM_BLOCK,
+      payload: block,
+    });
+  };
+
   return (
     <>
+      <CustomBlockDrawer
+        onSave={handleCustomBlockAdd}
+        onClose={onClose}
+        isOpen={isOpen}
+      />
       <Modal onConfirm={handleBlockAdd} />
       <Heading>Create your script</Heading>
       {blockInExecution == "" && (
@@ -154,6 +171,8 @@ const Script = () => {
             placeholder="nom du script"
           />
           <Flex gap={3}>
+            <Button onClick={openCustomBlockDrawer}>Custom Block</Button>
+
             <Button onClick={onOpen}>Add Block</Button>
             <Button onClick={handleRunScript} colorScheme="blue">
               Run
