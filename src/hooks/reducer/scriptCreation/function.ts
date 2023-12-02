@@ -1,3 +1,5 @@
+import { Dispatch } from "react";
+import { Executor } from "../../../components/views/CustomScript/CustomScriptExecutor";
 import {
   arreter,
   avancer,
@@ -13,6 +15,8 @@ import {
 } from "../../../types/ScriptTypes/Block.types";
 import { ScriptShema } from "../../../types/ScriptTypes/ScriptShema.types";
 import { PayloadAddBlock } from "./scriptCreationReducer";
+import { droneAction } from "../3DScene/droneMoveReducer";
+import { Executor3D } from "../3DScene/3DExecutor";
 
 type Distance = number | undefined;
 
@@ -24,7 +28,7 @@ export function createActionPayload(currentPayload: PayloadAddBlock) {
 }
 
 export function createActionWithName(name: BlockName, distance: Distance) {
-  let action: () => Promise<BlockResult>;
+  let action: (() => Promise<BlockResult>) | undefined;
   switch (name) {
     case BlockName.Avancer:
       action = async () => {
@@ -57,9 +61,7 @@ export function createActionWithName(name: BlockName, distance: Distance) {
       };
       break;
     default:
-      action = async () => {
-        return avancer(distance);
-      };
+      action = undefined;
       break;
   }
   return action;
@@ -108,19 +110,29 @@ export function moveArray<T>(
 
   return nouveauRoad;
 }
-async function sleep(time: number) {
+export async function sleep(time: number) {
   await new Promise((resolve) => setTimeout(resolve, time));
   return;
 }
 export async function runScript(
   script: ScriptShema,
-  callback: (name: string) => void
+  callback: (name: string) => void,
+  dispatchDroneState?: Dispatch<droneAction>
 ) {
   const { road } = script;
+
+  if (dispatchDroneState != undefined) {
+    Executor3D(road, dispatchDroneState, callback);
+    return;
+  }
   console.log(road);
   for (const block of road) {
-    block.action(undefined);
     callback(block.uid);
+    if (block.action) {
+      block.action(undefined);
+    } else if (block.customCode) {
+      await Executor(block.customCode);
+    }
     await sleep(block.time);
   }
   callback("");
