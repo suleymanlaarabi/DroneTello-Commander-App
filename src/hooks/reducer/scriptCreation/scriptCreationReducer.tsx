@@ -14,6 +14,7 @@ interface Action<T extends string, P> {
 
 export enum ActionKind {
   ADD_BLOCK = "ADD_BLOCK",
+  ADD_CUSTOM_BLOCK = "ADD_CUSTOM_BLOCK",
   REMOVE_BLOCK = "REMOVE_BLOCK",
   UPDATE_NAME = "UPDATE_NAME",
   MOVE_BLOCK = "MOVE_BLOCK",
@@ -29,7 +30,18 @@ export type PayloadAddBlock = {
   action?: () => Promise<BlockResult>;
 };
 
+export type PayloadAddCustomBlock = {
+  name: string;
+  time: number;
+  customCode: string;
+};
+
 type ActionAddBlock = Action<ActionKind.ADD_BLOCK, PayloadAddBlock>;
+
+type ActionAddCustomdBlock = Action<
+  ActionKind.ADD_CUSTOM_BLOCK,
+  PayloadAddCustomBlock
+>;
 
 type ActionSetScript = Action<ActionKind.SET_SCRIPT, ScriptShema>;
 
@@ -61,7 +73,8 @@ export type actionScriptCreationReducer =
   | ActionRemoveBlock
   | ActionMoveBlock
   | ActionSetScript
-  | ActionWithoutPayload;
+  | ActionWithoutPayload
+  | ActionAddCustomdBlock;
 
 function scriptCreationReducer(
   state: ScriptShema,
@@ -86,6 +99,19 @@ function scriptCreationReducer(
             time: payload.time,
             distance: payload.distance,
             action: payload.action,
+          } as Block,
+        ],
+      };
+    case ActionKind.ADD_CUSTOM_BLOCK:
+      return {
+        name: state.name,
+        road: [
+          ...state.road,
+          {
+            uid: uid(),
+            name: payload.name,
+            time: payload.time,
+            customCode: payload.customCode,
           } as Block,
         ],
       };
