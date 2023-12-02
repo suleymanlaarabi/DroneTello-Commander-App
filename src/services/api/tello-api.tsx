@@ -10,12 +10,14 @@ const actionWithoutDistance = [
   BlockName.Emergency,
 ];
 
-function moveAction(action: BlockName, distance: number | undefined) {
-  console.log(action);
+export async function moveAction(
+  action: BlockName,
+  distance?: number | undefined
+) {
   if (actionWithoutDistance.includes(action)) {
-    return get(config.host + "/tello/" + action);
+    return await get(config.host + "/tello/" + action);
   } else {
-    return get(
+    return await get(
       config.host +
         "/tello/" +
         action +
