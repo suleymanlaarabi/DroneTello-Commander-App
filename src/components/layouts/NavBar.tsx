@@ -25,6 +25,14 @@ const Links = [
     name: "Custom Script",
     path: "custom-script",
   },
+  {
+    name: "Reconaissance Vocale",
+    path: "speech",
+  },
+  {
+    name: "Vue 3D",
+    path: "3d-view",
+  },
 ];
 
 const Link = (props: Props) => {
