@@ -19,6 +19,7 @@ export type Block = {
   uid: string;
   name: BlockName;
   time: number;
-  distance: number;
-  action: (distance: number | undefined) => Promise<BlockResult>;
+  distance?: number;
+  action?: (distance: number | undefined) => Promise<BlockResult>;
+  customCode?: string;
 };
